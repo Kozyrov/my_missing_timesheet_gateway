@@ -1,9 +1,24 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const timesheets = require('../mockData');
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+/* GET Timesheet by ID */
+router.get('/timesheet/:id', (req, res, next) => {
+  let reqID = req.params.id;
+  checkValidId(reqID);
+  let result = timesheets[reqID]
+  if(result) {
+    res.send(result);
+  } else {
+    throw `Sorry, no timesheet with supplied id:${reqID}`;
+  }
 });
+
+
+//param = ID<int> return = <bool>
+const checkValidID = (ID) => {
+  
+}
+
 
 module.exports = router;
