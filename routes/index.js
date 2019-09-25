@@ -3,21 +3,40 @@ const router = express.Router();
 const timesheets = require('../mockData');
 
 /* GET Timesheet by ID */
-router.get('/timesheet/:id', (req, res, next) => {
+router.get('/timesheet/:id', (req, res) => {
   let reqID = req.params.id;
-  checkValidId(reqID);
-  let result = timesheets[reqID]
-  if(result) {
-    res.send(result);
+  let validated = checkValidID(reqID);
+  if(validated.valid){
+    let result = timesheets[reqID];
+    if(result) {
+      res.json(result);
+    } else {
+      throw new Error(`Sorry, no timesheet with supplied id: ${reqID}.`);
+    }
   } else {
-    throw `Sorry, no timesheet with supplied id:${reqID}`;
-  }
+    throw new Error(`${validated.message}`);
+  };
 });
 
 
 //param = ID<int> return = <bool>
 const checkValidID = (ID) => {
-  
+  switch (true) {
+    case (ID.length < 5):
+      return {
+        "valid": false,
+        "message": "ID contains too few integers."
+      };
+    case (isNaN(ID)):
+      return {
+        "valid": false,
+        "message": "ID is not a number."
+      };
+    default:
+      return {
+        "valid": true
+      };
+  }
 }
 
 
